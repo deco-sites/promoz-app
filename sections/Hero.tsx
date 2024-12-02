@@ -1,100 +1,84 @@
 import type { ImageWidget } from "apps/admin/widgets.ts";
 import Image from "apps/website/components/Image.tsx";
 
-export interface CTA {
-  id?: string;
-  href: string;
-  text: string;
-  outline?: boolean;
-}
-
-export interface Props {
+export interface HeroProps {
   /**
    * @format rich-text
-   * @default Click here to tweak this text however you want.
+   * @default <p>PromoZap</p>
    */
   title?: string;
   /**
-   * @default This text is fully editable and ready for your personal touch. Just click here, head over to the section window, or dive straight into the code to make changes as you see fit. Whether it's about the content, formatting, font, or anything in between, editing is just a click away.
+   * @format textarea
+   * @default Venha descobrir a melhor plataforma de compra e venda do Brasil e comece a acumular suas ZapMoedas antes de todo mundo! Tenha acesso a promoções exclusivas e troque suas ZapMoedas por mais descontos, cashback e muito mais.
    */
   description?: string;
-  image?: ImageWidget;
-  placement?: "left" | "right";
-  cta?: CTA[];
+  /**
+   * @format color-input
+   * @default #004085
+   */
+  primaryColor?: string;
+  /**
+   * @format text
+   * @default Clique aqui para conhecer o PromoZap
+   */
+  ctaButtonText?: string;
+  logoImage?: ImageWidget;
+  background?: ImageWidget;
 }
 
-const PLACEMENT = {
-  left: "flex-col text-left lg:flex-row-reverse",
-  right: "flex-col text-left lg:flex-row",
-};
-
-export default function HeroFlats({
-  title = "Click here to tweak this text however you want.",
-  description =
-    "This text is fully editable and ready for your personal touch. Just click here, head over to the section window, or dive straight into the code to make changes as you see fit. Whether it's about the content, formatting, font, or anything in between, editing is just a click away.",
-  image,
-  placement = "left",
-  cta = [
-    { id: "change-me-1", href: "/", text: "Change me", outline: false },
-    { id: "change-me-2", href: "/", text: "Change me", outline: true },
-  ],
-}: Props) {
+export default function Hero({
+  title = "<p>PromoZap</p>",
+  description = "Venha descobrir a melhor plataforma de compra e venda do Brasil e comece a acumular suas ZapMoedas antes de todo mundo! Tenha acesso a promoções exclusivas e troque suas ZapMoedas por mais descontos, cashback e muito mais.",
+  primaryColor = "#004085",
+  ctaButtonText = "Clique aqui para conhecer o PromoZap",
+  logoImage = "https://deco-sites-assets.s3.sa-east-1.amazonaws.com/promoz-app/bbb0c602-e7b5-4934-ab8b-f25afed322ac/Screenshot-2024-11-30-at-18.28.55.png",
+  background,
+}: HeroProps) {
   return (
-    <nav class="lg:container lg:mx-auto mx-4">
-      <div class="flex flex-col items-center gap-8">
-        <div
-          class={`flex w-full xl:container xl:mx-auto py-20 mx-5 md:mx-10 z-10 ${
-            image
-              ? PLACEMENT[placement]
-              : "flex-col items-center justify-center text-center"
-          } lg:py-36 gap-12 md:gap-20 items-center`}
-        >
-          {image && (
+    <section
+      class="relative bg-cover bg-center py-16 lg:py-28"
+      style={{
+        backgroundImage: background
+          ? `url(${background})`
+          : "linear-gradient(to right, #f3f4f6, #e5e7eb)",
+      }}
+    >
+      <div class="container mx-auto flex flex-col-reverse lg:flex-row items-center justify-between gap-12">
+        {/* Text Content */}
+        <div class="lg:w-1/2 text-center lg:text-left space-y-6">
+          <h1
+            class="text-4xl lg:text-6xl font-extrabold text-gray-800"
+            dangerouslySetInnerHTML={{ __html: title }}
+          ></h1>
+          <p class="text-lg text-gray-600">{description}</p>
+          <div class="mt-6">
+            <a
+              href="https://wa.me/558393975190?text=Ol%C3%A1%2C+gostaria+de+criar+uma+conta.+Meu+c%C3%B3digo+de+convite+%C3%A9%3A+7W4Zc6wVz"
+              class="btn btn-primary btn-lg font-semibold text-white"
+              style={{
+                backgroundColor: primaryColor,
+                borderColor: primaryColor,
+              }}
+            >
+              {ctaButtonText}
+            </a>
+          </div>
+        </div>
+
+        {/* Logo Section */}
+        <div class="lg:w-1/2 flex items-center justify-center">
+          {logoImage && (
             <Image
-              width={640}
-              class="w-full lg:w-1/2 object-fit"
-              sizes="(max-width: 640px) 100vw, 30vw"
-              src={image}
-              alt={image}
-              decoding="async"
+              src={logoImage}
+              alt="PromoZap Logo"
+              width={300}
+              height={300}
+              // class="rounded-full shadow-lg"
               loading="lazy"
             />
           )}
-          <div
-            class={`mx-6 lg:mx-auto lg:w-full space-y-4 gap-4 ${
-              image
-                ? "lg:w-1/2 lg:max-w-xl"
-                : "flex flex-col items-center justify-center lg:max-w-3xl"
-            }`}
-          >
-            <div
-              class="inline-block lg:text-[80px] text-4xl leading-none font-medium"
-              dangerouslySetInnerHTML={{
-                __html: title,
-              }}
-            >
-            </div>
-            <p class="text-lg md:text-md leading-[150%]">
-              {description}
-            </p>
-            <div class="flex items-center gap-3">
-              {cta?.map((item) => (
-                <a
-                  key={item?.id}
-                  id={item?.id}
-                  href={item?.href}
-                  target={item?.href.includes("http") ? "_blank" : "_self"}
-                  class={`font-normal btn btn-primary ${
-                    item.outline && "btn-outline"
-                  }`}
-                >
-                  {item?.text}
-                </a>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
-    </nav>
+    </section>
   );
 }
